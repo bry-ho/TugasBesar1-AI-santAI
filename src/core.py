@@ -9,24 +9,40 @@ class Schedule:
         self.days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']
         self.hours = list(range(7, 18))  # 7-17 (jam mulai)
         
+    def _get_random_sessions(self, sks: int) -> List[int]:
+        """
+        Splits a total number of SKS into a list of random session durations.
+        Example: sks=4 might return [1, 2, 1] or [3, 1] or [2, 2] or [4].
+        """
+        if sks <= 0:
+            return []
+        
+        sessions = []
+        remaining_sks = sks
+        while remaining_sks > 0:
+            # A session can be from 1 hour up to the remaining SKS duration
+            chunk = random.randint(1, remaining_sks)
+            sessions.append(chunk)
+            remaining_sks -= chunk
+        return sessions
+
     def initialize_random(self) -> List[Dict[str, Any]]:
         self.schedule = []
         
         for kelas in self.data['kelas_mata_kuliah']:
             sks = kelas['sks']
-            
-            # Split SKS into sessions
-            if sks == 4:
-                sessions = [2, 2]
-            elif sks == 3:
-                sessions = [2, 1]
-            else:
-                sessions = [2]
+            sessions = self._get_random_sessions(sks)
             
             for duration in sessions:
                 day = random.choice(self.days)
                 # Make sure end time doesn't exceed 18
                 max_start = 18 - duration
+                
+                # Prevent errors if a session is too long for the day
+                if max_start < 7:
+                    print(f"Warning: A {duration}-hour session for {kelas['kode']} is too long to schedule. Skipping.")
+                    continue
+                    
                 start_hour = random.randint(7, max_start)
                 room = random.choice(self.data['ruangan'])['kode']
                 
