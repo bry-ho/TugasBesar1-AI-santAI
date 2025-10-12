@@ -1,8 +1,9 @@
 from typing import List, Dict, Any, Union
 from .algorithm.hill_climbing import HillClimbingResult
 from .algorithm.simulated_annealing import SimulatedAnnealingResult
+from .algorithm.genetic import GeneticResult
 
-AlgorithmResult = Union[HillClimbingResult, SimulatedAnnealingResult]
+AlgorithmResult = Union[HillClimbingResult, SimulatedAnnealingResult, GeneticResult]
 
 # Summary hasil parsing data
 def print_summary(data: dict) -> None:
@@ -90,14 +91,31 @@ def print_simulated_annealing_result(result: SimulatedAnnealingResult, algorithm
         acceptance_rate = result.accepted_moves / (result.accepted_moves + result.rejected_moves) * 100
         print(f"Acceptance Rate: {acceptance_rate:.2f}%")
 
+# Print hasil algoritma genetic
+def print_genetic_result(result: GeneticResult, algorithm_name: str, run_num: int):
+    print(f"\n{'='*60}")
+    print(f"{algorithm_name} (Run {run_num}) - HASIL EKSPERIMEN")
+    print(f"{'='*60}")
+    print(f"Nilai Objective Function Awal: {result.initial_value:.2f}")
+    print(f"Nilai Objective Function Akhir: {result.final_value:.2f}")
+    print(f"Improvement: {result.initial_value - result.final_value:.2f}")
+    print(f"Jumlah Generasi: {result.iterations}")
+    print(f"Durasi: {result.duration:.4f} detik")
+    print(f"Ukuran Populasi: {result.population_size}")
+    if result.best_fitness_history:
+        print(f"Best Fitness per Generation: {len(result.best_fitness_history)} generations tracked")
+        print(f"Final Average Fitness: {result.average_fitness_history[-1]:.2f}")
+
 # Print result summary untuk semua jenis algoritma
 def print_result_summary(result: AlgorithmResult, algorithm_name: str, run_num: int):
     if isinstance(result, HillClimbingResult):
         print_hill_climbing_result(result, algorithm_name, run_num)
     elif isinstance(result, SimulatedAnnealingResult):
         print_simulated_annealing_result(result, algorithm_name, run_num)
+    elif isinstance(result, GeneticResult):
+        print_genetic_result(result, algorithm_name, run_num)
     else:
-        # buat genetic algorithm nanti
+        # Fallback untuk hasil lainnya
         print(f"\n{'='*60}")
         print(f"{algorithm_name} (Run {run_num}) - HASIL EKSPERIMEN")
         print(f"{'='*60}")
