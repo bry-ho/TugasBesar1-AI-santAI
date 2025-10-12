@@ -178,8 +178,7 @@ class HillClimbing:
         
         return result
     
-    def random_restart(self, max_restarts: int = 10, 
-                       max_iterations_per_restart: int = 100) -> HillClimbingResult:
+    def random_restart(self, max_restarts: int = 10, max_iterations_per_restart: int = 100) -> HillClimbingResult:
         result = HillClimbingResult()
         start_time = time.time()
         
@@ -238,7 +237,6 @@ class HillClimbing:
         result.duration = time.time() - start_time
         
         return result
-
 
 # Export public API
 __all__ = ['HillClimbing', 'HillClimbingResult']
