@@ -92,9 +92,9 @@ def print_simulated_annealing_result(result: SimulatedAnnealingResult, algorithm
         print(f"Acceptance Rate: {acceptance_rate:.2f}%")
 
 # Print hasil algoritma genetic
-def print_genetic_result(result: GeneticResult, algorithm_name: str, run_num: int):
+def print_genetic_result(result: GeneticResult, run_num: int):
     print(f"\n{'='*60}")
-    print(f"{algorithm_name} (Run {run_num}) - HASIL EKSPERIMEN")
+    print(f"Genetic Algorithm (Run {run_num}) - HASIL EKSPERIMEN")
     print(f"{'='*60}")
     print(f"Nilai Objective Function Awal: {result.initial_value:.2f}")
     print(f"Nilai Objective Function Akhir: {result.final_value:.2f}")
@@ -106,113 +106,7 @@ def print_genetic_result(result: GeneticResult, algorithm_name: str, run_num: in
         print(f"Best Fitness per Generation: {len(result.best_fitness_history)} generations tracked")
         print(f"Final Average Fitness: {result.average_fitness_history[-1]:.2f}")
 
-# Print result summary untuk semua jenis algoritma
-def print_result_summary(result: AlgorithmResult, algorithm_name: str, run_num: int):
-    if isinstance(result, HillClimbingResult):
-        print_hill_climbing_result(result, algorithm_name, run_num)
-    elif isinstance(result, SimulatedAnnealingResult):
-        print_simulated_annealing_result(result, algorithm_name, run_num)
-    elif isinstance(result, GeneticResult):
-        print_genetic_result(result, algorithm_name, run_num)
-    else:
-        # Fallback untuk hasil lainnya
-        print(f"\n{'='*60}")
-        print(f"{algorithm_name} (Run {run_num}) - HASIL EKSPERIMEN")
-        print(f"{'='*60}")
-        print(f"Nilai Objective Function Awal: {result.initial_value:.2f}")
-        print(f"Nilai Objective Function Akhir: {result.final_value:.2f}")
-        print(f"Improvement: {result.initial_value - result.final_value:.2f}")
-        print(f"Jumlah Iterasi: {result.iterations}")
-        print(f"Durasi: {result.duration:.4f} detik")
 
-# Print statistik
-def print_statistics(results: List[AlgorithmResult], algorithm_name: str, num_runs: int):
-    print(f"\n{'='*60}")
-    print(f"RINGKASAN {algorithm_name} ({num_runs} runs)")
-    print(f"{'='*60}")
-
-    final_values = [r.final_value for r in results]
-    iterations = [r.iterations for r in results]
-    durations = [r.duration for r in results]
-
-    print(f"\nNilai Objective Function Akhir:")
-    print(f"  Min: {min(final_values):.2f}")
-    print(f"  Max: {max(final_values):.2f}")
-    print(f"  Rata-rata: {sum(final_values)/len(final_values):.2f}")
-
-    print(f"\nJumlah Iterasi:")
-    print(f"  Min: {min(iterations)}")
-    print(f"  Max: {max(iterations)}")
-    print(f"  Rata-rata: {sum(iterations)/len(iterations):.1f}")
-
-    print(f"\nDurasi:")
-    print(f"  Min: {min(durations):.4f} detik")
-    print(f"  Max: {max(durations):.4f} detik")
-    print(f"  Rata-rata: {sum(durations)/len(durations):.4f} detik")
-
-# Print history objective function
-def print_objective_history(result: AlgorithmResult, run_num: int):
-    print(f"\n{'='*60}")
-    print(f"OBJECTIVE FUNCTION HISTORY (Run {run_num})")
-    print(f"{'='*60}")
-    print(f"Iterasi -> Nilai")
-    for i, val in enumerate(result.objective_history):
-        print(f"{i:3d}     -> {val:.2f}")
-
-# Print temp history
-def print_temperature_history(result: SimulatedAnnealingResult, run_num: int):
-    if hasattr(result, 'temperature_history') and result.temperature_history:
-        print(f"\n{'='*60}")
-        print(f"TEMPERATURE HISTORY (Run {run_num})")
-        print(f"{'='*60}")
-        print(f"Iterasi -> Temperature")
-        for i, temp in enumerate(result.temperature_history):
-            if i % max(1, len(result.temperature_history) // 20) == 0:  # Show every nth value
-                print(f"{i:3d}     -> {temp:.4f}")
-
-# Print final schedule summary
-def print_final_schedule_summary(result: AlgorithmResult, algorithm_name: str, run_num: int = None):
-    run_text = f"(Run {run_num})" if run_num else ""
-    print(f"\n{'='*80}")
-    print(f"RINGKASAN JADWAL AKHIR - {algorithm_name} {run_text}")
-    print(f"{'='*80}")
-    
-    schedule = result.final_state
-    
-    # Count meetings per day
-    day_counts = {}
-    room_usage = {}
-    for meeting in schedule:
-        day = meeting['day']
-        room = meeting['room']
-        day_counts[day] = day_counts.get(day, 0) + 1
-        room_usage[room] = room_usage.get(room, 0) + meeting['duration']
-    
-    print(f"Total Meetings: {len(schedule)}")
-    print(f"Objective Function Value: {result.final_value:.2f}")
-    
-    print(f"\nDistribusi Pertemuan per Hari:")
-    for day in ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']:
-        count = day_counts.get(day, 0)
-        print(f"  {day}: {count} pertemuan")
-    
-    print(f"\nPenggunaan Ruangan (total jam):")
-    for room, hours in sorted(room_usage.items()):
-        print(f"  {room}: {hours} jam")
-
-# Print tabel perbandingan untuk semua jenis algoritma
-def print_comparison_table(results_dict: Dict[str, AlgorithmResult]):
-    print(f"\n{'='*60}")
-    print("TABEL PERBANDINGAN HASIL TERBAIK")
-    print(f"{'='*60}")
-    print(f"{'Algoritma':<40} {'Nilai Akhir':<15} {'Iterasi':<10} {'Durasi (s)':<15}")
-    print("-" * 80)
-    for algo, result in results_dict.items():
-        print(f"{algo:<40} {result.final_value:<15.2f} {result.iterations:<10} {result.duration:<15.4f}")
-
-# Export public API
 __all__ = [
-    'print_summary', 'print_schedule', 'print_result_summary', 
-    'print_statistics', 'print_objective_history', 'print_temperature_history',
-    'print_comparison_table', 'print_final_schedule_summary', 'AlgorithmResult'
+    'print_summary', 'print_schedule', 'AlgorithmResult', 'print_hill_climbing_result', 'print_simulated_annealing_result', 'print_genetic_result'
 ]
