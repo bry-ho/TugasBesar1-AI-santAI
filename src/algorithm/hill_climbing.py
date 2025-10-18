@@ -44,6 +44,10 @@ class HillClimbing:
         
         iteration = 0
         while True:
+            # Stop if the objective function value is 0
+            if current_value == 0:
+                break
+
             # Get all neighbors
             neighbors = current.get_neighbors()
             
@@ -87,6 +91,10 @@ class HillClimbing:
         
         iteration = 0
         while True:
+            # Stop if the objective function value is 0
+            if current_value == 0:
+                break
+
             # Get all neighbors
             neighbors = current.get_neighbors()
             
@@ -129,42 +137,44 @@ class HillClimbing:
         result.objective_history.append(current_value)
         
         iteration = 0
-        sideways_count = 0
+        consecutive_sideways = 0
         
         while True:
-            # Get all neighbors
+            if current_value == 0:
+                break
+            
+            # Check sideways limit before processing
+            if consecutive_sideways >= max_sideways:
+                break
+            
             neighbors = current.get_neighbors()
             
-            # Find the best neighbor (including equal)
-            best_neighbor = None
-            best_value = current_value
-            is_sideways = False
+            best_neighbors = []
+            best_value = float('inf')
             
+            # Find all neighbors with best value
             for neighbor in neighbors:
                 value = self._evaluate(neighbor)
                 if value < best_value:
                     best_value = value
-                    best_neighbor = neighbor
-                    is_sideways = False
-                elif value == best_value and sideways_count < max_sideways:
-                    # Allow sideways move
-                    if best_neighbor is None or not is_sideways:
-                        best_value = value
-                        best_neighbor = neighbor
-                        is_sideways = True
+                    best_neighbors = [neighbor]
+                elif value == best_value:
+                    best_neighbors.append(neighbor)
             
-            if best_neighbor is None:
+            # If no improvement or sideways move possible
+            if best_value > current_value:
                 break
             
-            if is_sideways:
-                sideways_count += 1
+            # Randomly select from best neighbors
+            best_neighbor = random.choice(best_neighbors)
+            
+            # Track if this is a sideways move
+            if best_value == current_value:
+                consecutive_sideways += 1
+                result.sideways_moves += 1
             else:
-                sideways_count = 0 
+                consecutive_sideways = 0
             
-            if sideways_count >= max_sideways:
-                break
-            
-            # Move to best neighbor
             current = best_neighbor
             current_value = best_value
             result.objective_history.append(current_value)
@@ -173,7 +183,6 @@ class HillClimbing:
         result.final_state = current.schedule
         result.final_value = current_value
         result.iterations = iteration
-        result.sideways_moves = sideways_count
         result.duration = time.time() - start_time
         
         return result
@@ -191,7 +200,10 @@ class HillClimbing:
         result.initial_state = copy.deepcopy(first_schedule.schedule)
         result.initial_value = self._evaluate(first_schedule)
         
+        actual_restarts = 0
         for restart in range(max_restarts):
+            actual_restarts = restart + 1
+            
             if restart == 0:
                 current = first_schedule
             else:
@@ -201,8 +213,12 @@ class HillClimbing:
             current_value = self._evaluate(current)
             iteration = 0
             
-            # Steepest ascent for this restart
             while iteration < max_iterations_per_restart:
+                if current_value == 0:
+                    best_overall_state = current.schedule
+                    best_overall_value = current_value
+                    break
+
                 neighbors = current.get_neighbors()
                 
                 best_neighbor = None
@@ -224,14 +240,16 @@ class HillClimbing:
             
             result.iterations_per_restart.append(iteration)
             
-            # Update best overall
             if current_value < best_overall_value:
                 best_overall_value = current_value
                 best_overall_state = current.schedule
+
+            if best_overall_value == 0:
+                break
         
         result.final_state = best_overall_state
         result.final_value = best_overall_value
-        result.restarts = max_restarts
+        result.restarts = actual_restarts
         result.iterations = sum(result.iterations_per_restart)
         result.objective_history = all_objective_history
         result.duration = time.time() - start_time
