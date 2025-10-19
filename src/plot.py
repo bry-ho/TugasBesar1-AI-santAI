@@ -141,20 +141,19 @@ def plot_simulated_annealing_eET(result, run_num: int):
         
         eET_history.append(eET)
     
-    fig, ax = plt.subplots(3, 1, figsize=(12, 14))
-    fig.suptitle(f'Simulated Annealing - e^(ΔE/T) Analysis (Run {run_num})', 
-                 fontsize=15, fontweight='bold')
+    plt.figure(figsize=(12, 7))
     
     iterations = list(range(1, len(eET_history) + 1))
     
-    ax.plot(iterations, eET_history, 'purple', linewidth=2.5, label='e^(ΔE/T)')
-    ax.fill_between(iterations, eET_history, alpha=0.3, color='purple')
-    ax.axhline(y=1, color='red', linestyle='--', linewidth=1, alpha=0.5, label='Threshold (e^0 = 1)')
-    ax.set_xlabel('Iteration', fontsize=12)
-    ax.set_ylabel('e^(ΔE/T) Value', fontsize=12)
-    ax.set_title('Acceptance Probability Factor e^(ΔE/T) Over Iterations', fontsize=13, fontweight='bold')
-    ax.legend(fontsize=10)
-    ax.grid(True, alpha=0.3)
+    plt.plot(iterations, eET_history, 'purple', linewidth=2.5, label='e^(ΔE/T)')
+    plt.fill_between(iterations, eET_history, alpha=0.3, color='purple')
+    plt.axhline(y=1, color='red', linestyle='--', linewidth=1, alpha=0.5, label='Threshold (e^0 = 1)')
+    plt.xlabel('Iteration', fontsize=12)
+    plt.ylabel('e^(ΔE/T) Value', fontsize=12)
+    plt.title(f'Simulated Annealing - Acceptance Probability Factor e^(ΔE/T) (Run {run_num})', 
+              fontsize=14, fontweight='bold')
+    plt.legend(fontsize=10)
+    plt.grid(True, alpha=0.3)
     
     avg_eET = np.mean(eET_history)
     max_eET = max(eET_history)
@@ -162,11 +161,12 @@ def plot_simulated_annealing_eET(result, run_num: int):
     
     stats_text = f'Average e^(ΔE/T): {avg_eET:.4f}\n'
     stats_text += f'Max e^(ΔE/T): {max_eET:.4f}\n'
-    stats_text += f'Min e^(ΔE/T): {min_eET:.4f}'
+    stats_text += f'Min e^(ΔE/T): {min_eET:.4f}\n'
+    stats_text += f'Iterations: {len(eET_history)}'
     
-    ax.text(0.02, 0.98, stats_text, transform=ax[0].transAxes,
-               fontsize=9, verticalalignment='top',
-               bbox=dict(boxstyle='round', facecolor='plum', alpha=0.7))
+    plt.text(0.02, 0.98, stats_text, transform=plt.gca().transAxes,
+             fontsize=9, verticalalignment='top',
+             bbox=dict(boxstyle='round', facecolor='plum', alpha=0.7))
     
     plt.tight_layout()
     
