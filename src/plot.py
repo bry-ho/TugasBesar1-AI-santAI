@@ -14,7 +14,6 @@ def plot_objective_history(result, algorithm_name: str, run_num: int):
     iterations = list(range(len(result.objective_history)))
     plt.plot(iterations, result.objective_history, 'b-', linewidth=2, label='Objective Value')
     
-    # Add markers for initial and final values
     plt.plot(0, result.initial_value, 'go', markersize=10, label=f'Initial: {result.initial_value:.2f}')
     plt.plot(len(result.objective_history)-1, result.final_value, 'ro', markersize=10, 
              label=f'Final: {result.final_value:.2f}')
@@ -25,7 +24,6 @@ def plot_objective_history(result, algorithm_name: str, run_num: int):
     plt.legend(fontsize=10)
     plt.grid(True, alpha=0.3)
     
-    # Add statistics box
     improvement = result.initial_value - result.final_value
     stats_text = f'Iterations: {result.iterations}\n'
     stats_text += f'Improvement: {improvement:.2f}\n'
@@ -37,7 +35,6 @@ def plot_objective_history(result, algorithm_name: str, run_num: int):
     
     plt.tight_layout()
     
-    # Save to plots folder with timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
@@ -68,30 +65,26 @@ def plot_genetic_population_fitness(result, run_num: int):
     
     generations = list(range(len(result.best_fitness_history)))
     
-    # Plot best fitness (minimum objective value in population)
     plt.plot(generations, result.best_fitness_history, 'b-', linewidth=2.5, 
-             label='Best Fitness (Terbaik dari Populasi)', marker='o', markersize=4, 
+             label='Best Fitness', marker='o', markersize=4, 
              markevery=max(1, len(generations)//20))
     
-    # Plot average fitness (average objective value across population)
     plt.plot(generations, result.average_fitness_history, 'r--', linewidth=2.5, 
-             label='Average Fitness (Rata-rata Populasi)', marker='s', markersize=4,
+             label='Average Fitness', marker='s', markersize=4,
              markevery=max(1, len(generations)//20))
     
-    # Add markers for initial and final best values
     plt.plot(0, result.best_fitness_history[0], 'go', markersize=12, 
              label=f'Initial Best: {result.best_fitness_history[0]:.2f}', zorder=5)
     plt.plot(len(generations)-1, result.best_fitness_history[-1], 'mo', markersize=12, 
              label=f'Final Best: {result.best_fitness_history[-1]:.2f}', zorder=5)
     
-    plt.xlabel('Generasi (Iterasi)', fontsize=13)
-    plt.ylabel('Objective Function Value (lower is better)', fontsize=13)
+    plt.xlabel('Generasi', fontsize=13)
+    plt.ylabel('Objective Function Value', fontsize=13)
     plt.title(f'Genetic Algorithm - Best & Average Fitness vs Generasi (Run {run_num})', 
               fontsize=14, fontweight='bold')
     plt.legend(fontsize=10, loc='best')
     plt.grid(True, alpha=0.3)
     
-    # Add statistics box
     improvement = result.best_fitness_history[0] - result.best_fitness_history[-1]
     avg_improvement = result.average_fitness_history[0] - result.average_fitness_history[-1]
     
@@ -106,23 +99,9 @@ def plot_genetic_population_fitness(result, run_num: int):
     plt.text(0.02, 0.98, stats_text, transform=plt.gca().transAxes,
              fontsize=9, verticalalignment='top',
              bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7))
-    
-    # Add explanation box
-    explanation = 'Keterangan:\n'
-    explanation += '• Best Fitness (Biru): Nilai objektif terbaik\n'
-    explanation += '  (minimum) dari populasi di setiap generasi\n'
-    explanation += '• Average Fitness (Merah): Nilai rata-rata\n'
-    explanation += '  objektif seluruh individu di populasi\n'
-    explanation += '• Gap besar = populasi beragam\n'
-    explanation += '• Gap kecil = populasi konvergen'
-    
-    plt.text(0.98, 0.02, explanation, transform=plt.gca().transAxes,
-             fontsize=8, verticalalignment='bottom', horizontalalignment='right',
-             bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
-    
+
     plt.tight_layout()
     
-    # Save to plots folder with timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
