@@ -78,9 +78,9 @@ def plot_genetic_population_fitness(result, run_num: int):
     plt.plot(len(generations)-1, result.best_fitness_history[-1], 'mo', markersize=12, 
              label=f'Final Best: {result.best_fitness_history[-1]:.2f}', zorder=5)
     
-    plt.xlabel('Generasi', fontsize=13)
+    plt.xlabel('Iterasi', fontsize=13)
     plt.ylabel('Objective Function Value', fontsize=13)
-    plt.title(f'Genetic Algorithm - Best & Average Fitness vs Generasi (Run {run_num})', 
+    plt.title(f'Genetic Algorithm - Best & Average Fitness vs Iterasi (Run {run_num})', 
               fontsize=14, fontweight='bold')
     plt.legend(fontsize=10, loc='best')
     plt.grid(True, alpha=0.3)

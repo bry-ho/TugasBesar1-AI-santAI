@@ -99,11 +99,10 @@ def print_genetic_result(result: GeneticResult, run_num: int):
     print(f"Nilai Objective Function Awal: {result.initial_value:.2f}")
     print(f"Nilai Objective Function Akhir: {result.final_value:.2f}")
     print(f"Improvement: {result.initial_value - result.final_value:.2f}")
-    print(f"Jumlah Generasi: {result.iterations}")
+    print(f"Jumlah Iterasi: {result.iterations}")
     print(f"Durasi: {result.duration:.4f} detik")
     print(f"Ukuran Populasi: {result.population_size}")
     if result.best_fitness_history:
-        print(f"Best Fitness per Generation: {len(result.best_fitness_history)} generations tracked")
         print(f"Final Average Fitness: {result.average_fitness_history[-1]:.2f}")
 
 
