@@ -177,7 +177,7 @@ def run_experiment(data: dict, algorithm_name: str, choice_num: int, num_runs: i
         result = run_algorithm(data, choice_num, params, objective_type)
 
         if choice_num == 8: 
-            print_genetic_result(result, algorithm_name, run + 1)
+            print_genetic_result(result, run + 1)
         elif isinstance(result, SimulatedAnnealingResult):
             print_simulated_annealing_result(result, algorithm_name, run + 1)
         else:
